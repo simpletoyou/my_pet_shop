@@ -1,61 +1,191 @@
+<!--
+ * @Description: 
+ * @version: 
+ * @Author: chenchuhua
+ * @Date: 2021-06-03 10:32:05
+ * @LastEditors: chenchuhua
+ * @LastEditTime: 2021-06-11 18:23:52
+-->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Pete's Pet Shop</title>
 
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>Pete's Pet Shop</title>
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <h1 class="text-center">Pete's Pet Shop</h1>
-          <hr/>
-          <br/>
+  <!-- Bootstrap -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+  
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-8 col-sm-push-2" style="display: flex;justify-content: center;align-items: center;">
+        <h1 class="text-center">Pete's Pet Shop</h1>
+        <div style="line-height: 1.1; margin-top: 20px; margin-bottom: 10px;">
+          <div id="prepare">
+            <button class="btn btn-primary" id="btn-connect">
+              连接钱包
+            </button>
+          </div>
+  
+          <div id="connected" style="display: none">
+            <button class="btn btn-primary" id="btn-disconnect">
+              断开连接
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div id="petsRow" class="row">
-        <!-- PETS LOAD HERE -->
+        <hr />
+        <br />
       </div>
     </div>
 
-    <div id="petTemplate" style="display: none;">
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="panel panel-default panel-pet">
-          <div class="panel-heading">
-            <h3 class="panel-title">Scrappy</h3>
-          </div>
-          <div class="panel-body">
-            <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
-            <br/><br/>
-            <strong>Breed</strong>: <span class="pet-breed">Golden Retriever</span><br/>
-            <strong>Age</strong>: <span class="pet-age">3</span><br/>
-            <strong>Location</strong>: <span class="pet-location">Warren, MI</span><br/><br/>
-            <button class="btn btn-default btn-adopt" type="button" data-id="0">Adopt</button>
-          </div>
+    <div id="petsRow" class="row">
+    </div>
+  </div>
+
+  <!-- We use simple <template> templating for the example -->
+  <div id="templates" style="display: none">
+    <template id="template-balance">
+      <tr>
+        <th class="address"></th>
+        <td class="balance"></td>
+      </tr>
+    </template>
+  </div>
+
+  <div id="petTemplate" style="display: none;">
+    <div class="col-sm-6 col-md-4 col-lg-3">
+      <div class="panel panel-default panel-pet">
+        <div class="panel-heading">
+          <h3 class="panel-title">Scrappy</h3>
+        </div>
+        <div class="panel-body">
+          <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;"
+            src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
+          <br /><br />
+          <strong>Breed</strong>: <span class="pet-breed">Golden Retriever</span><br />
+          <strong>Age</strong>: <span class="pet-age">3</span><br />
+          <strong>Location</strong>: <span class="pet-location">Warren, MI</span><br /><br />
+          <button class="btn btn-default btn-adopt" type="button" data-id="0">Adopt</button>
         </div>
       </div>
     </div>
+  </div>
+  <script src="js/jq.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <script src="js/app.js"></script>
+  <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/web3modal"></script>
+  <script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider"></script>
+  <script type="text/javascript" src="https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js"></script>
+  <script>
+    "use strict";
+    // const Web3Modal = window.Web3Modal.default;
+    // const WalletConnectProvider = window.WalletConnectProvider.default;
+    // const Fortmatic = window.Fortmatic;
+    // let web3Modal
+    // let provider;
+    // function init() {
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/web3.min.js"></script>
-    <script src="js/truffle-contract.js"></script>
-    <script src="js/app.js"></script>
-  </body>
+    //   const providerOptions = {
+    //     walletconnect: {
+    //       package: WalletConnectProvider,
+    //       options: {
+    //         infuraId: "8043bb2cf99347b1bfadfb233c5325c0",
+    //       }
+    //     },
+
+    //     fortmatic: {
+    //       package: Fortmatic,
+    //       options: {
+    //         key: "pk_test_391E26A3B43A3350"
+    //       }
+    //     }
+    //   };
+    //   web3Modal = new Web3Modal({
+    //     cacheProvider: false, // optional
+    //     providerOptions, // required
+    //   });
+
+    // }
+    // async function fetchAccountData() {
+    //   const web3 = new Web3(provider);
+    //   const chainId = await web3.eth.getChainId();
+    //   const accounts = await web3.eth.getAccounts();
+    //   console.log("Got accounts", accounts);
+    //   const template = document.querySelector("#template-balance");
+    //   const accountContainer = document.querySelector("#accounts");
+    //   accountContainer.innerHTML = '';
+    //   const rowResolvers = accounts.map(async (address) => {
+    //     const balance = await web3.eth.getBalance(address);
+    //     const ethBalance = web3.utils.fromWei(balance, "ether");
+    //     const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
+    //     // Fill in the templated row and put in the document
+    //     const clone = template.content.cloneNode(true);
+    //     accountContainer.appendChild(clone);
+    //   });
+    //   await Promise.all(rowResolvers);
+    //   document.querySelector("#prepare").style.display = "none";
+    //   document.querySelector("#connected").style.display = "block";
+    // }
+    // async function refreshAccountData() {
+    //   document.querySelector("#connected").style.display = "none";
+    //   document.querySelector("#prepare").style.display = "block";
+    //   document.querySelector("#btn-connect").setAttribute("disabled", "disabled")
+    //   await fetchAccountData(provider);
+    //   document.querySelector("#btn-connect").removeAttribute("disabled")
+    // }
+    // // 点击 Connect wallet按钮，调起钱包选择页面
+    // async function onConnect() {
+    //   console.log("Opening a dialog", web3Modal);
+    //   try {
+    //     provider = await web3Modal.connect();
+    //     console.log('provider', provider)
+    //   } catch (e) {
+    //     console.log("Could not get a wallet connection", e);
+    //     return;
+    //   }
+    //   // Subscribe to accounts change
+    //   provider.on("accountsChanged", (accounts) => {
+    //     fetchAccountData();
+    //   });
+    //   // Subscribe to chainId change
+    //   provider.on("chainChanged", (chainId) => {
+    //     fetchAccountData();
+    //   });
+    //   // Subscribe to networkId change
+    //   provider.on("networkChanged", (networkId) => {
+    //     fetchAccountData();
+    //   });
+    //   await refreshAccountData();
+    // }
+    // async function onDisconnect() {
+    //   console.log("Killing the wallet connection", provider);
+    //   if (provider.close) {
+    //     await provider.close();
+    //     await web3Modal.clearCachedProvider();
+    //     provider = null;
+    //   }
+    //   // Set the UI back to the initial state
+    //   document.querySelector("#prepare").style.display = "block";
+    //   document.querySelector("#connected").style.display = "none";
+    // }
+    // window.addEventListener('load', async () => {
+    //   init();
+    //   document.querySelector("#btn-connect").addEventListener("click", onConnect);
+    //   document.querySelector("#btn-disconnect").addEventListener("click", onDisconnect);
+    // });
+  </script>
+  <script src="js/jq.js"></script>
+</body>
+
 </html>
