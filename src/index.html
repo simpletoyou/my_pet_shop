@@ -4,7 +4,7 @@
  * @Author: chenchuhua
  * @Date: 2021-06-03 10:32:05
  * @LastEditors: chenchuhua
- * @LastEditTime: 2021-06-11 18:23:52
+ * @LastEditTime: 2021-06-15 14:26:32
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +26,7 @@
   
   <div class="container">
     <div class="row">
-      <div class="col-xs-12 col-sm-8 col-sm-push-2" style="display: flex;justify-content: center;align-items: center;">
+      <div class="col-xs-4 col-sm-4 col-sm-push-2" style="display: flex;justify-content: center;align-items: center;">
         <h1 class="text-center">Pete's Pet Shop</h1>
         <div style="line-height: 1.1; margin-top: 20px; margin-bottom: 10px;">
           <div id="prepare">
@@ -61,14 +61,14 @@
   </div>
 
   <div id="petTemplate" style="display: none;">
-    <div class="col-sm-6 col-md-4 col-lg-3">
+    <div class="col-sm-4 col-md-4 col-lg-3">
       <div class="panel panel-default panel-pet">
         <div class="panel-heading">
           <h3 class="panel-title">Scrappy</h3>
         </div>
         <div class="panel-body">
           <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;"
-            src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
+            src="https://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=%E5%B1%B1%E8%8A%B1&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=-1&hd=undefined&latest=undefined&copyright=undefined&cs=311849838,4276793218&os=404692009,3288597543&simid=4121546100,811838175&pn=21&rn=1&di=200970&ln=1517&fr=&fmq=1623737874718_R&fm=rs9&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&oriquery=%E8%8A%B1&objurl=https%3A%2F%2Fgimg2.baidu.com%2Fimage_search%2Fsrc%3Dhttp%253A%252F%252Fwww.bbra.cn%252F%2528S%2528lcfndb55skleimvzdcfnx2f0%2529%2529%252FUploadfiles%252Fimgs%252F20120530%252Fflower3%252FXbzs_019.jpg%26refer%3Dhttp%253A%252F%252Fwww.bbra.cn%26app%3D2002%26size%3Df9999%2C10000%26q%3Da80%26n%3D0%26g%3D0n%26fmt%3Djpeg%3Fsec%3D1626329874%26t%3D940e215c85454ca3f2118b81e81f25de&rpstart=0&rpnum=0&adpicid=0&nojc=undefined" data-holder-rendered="true">
           <br /><br />
           <strong>Breed</strong>: <span class="pet-breed">Golden Retriever</span><br />
           <strong>Age</strong>: <span class="pet-age">3</span><br />
@@ -87,104 +87,6 @@
   <script type="text/javascript" src="https://unpkg.com/web3modal"></script>
   <script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider"></script>
   <script type="text/javascript" src="https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js"></script>
-  <script>
-    "use strict";
-    // const Web3Modal = window.Web3Modal.default;
-    // const WalletConnectProvider = window.WalletConnectProvider.default;
-    // const Fortmatic = window.Fortmatic;
-    // let web3Modal
-    // let provider;
-    // function init() {
-
-    //   const providerOptions = {
-    //     walletconnect: {
-    //       package: WalletConnectProvider,
-    //       options: {
-    //         infuraId: "8043bb2cf99347b1bfadfb233c5325c0",
-    //       }
-    //     },
-
-    //     fortmatic: {
-    //       package: Fortmatic,
-    //       options: {
-    //         key: "pk_test_391E26A3B43A3350"
-    //       }
-    //     }
-    //   };
-    //   web3Modal = new Web3Modal({
-    //     cacheProvider: false, // optional
-    //     providerOptions, // required
-    //   });
-
-    // }
-    // async function fetchAccountData() {
-    //   const web3 = new Web3(provider);
-    //   const chainId = await web3.eth.getChainId();
-    //   const accounts = await web3.eth.getAccounts();
-    //   console.log("Got accounts", accounts);
-    //   const template = document.querySelector("#template-balance");
-    //   const accountContainer = document.querySelector("#accounts");
-    //   accountContainer.innerHTML = '';
-    //   const rowResolvers = accounts.map(async (address) => {
-    //     const balance = await web3.eth.getBalance(address);
-    //     const ethBalance = web3.utils.fromWei(balance, "ether");
-    //     const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
-    //     // Fill in the templated row and put in the document
-    //     const clone = template.content.cloneNode(true);
-    //     accountContainer.appendChild(clone);
-    //   });
-    //   await Promise.all(rowResolvers);
-    //   document.querySelector("#prepare").style.display = "none";
-    //   document.querySelector("#connected").style.display = "block";
-    // }
-    // async function refreshAccountData() {
-    //   document.querySelector("#connected").style.display = "none";
-    //   document.querySelector("#prepare").style.display = "block";
-    //   document.querySelector("#btn-connect").setAttribute("disabled", "disabled")
-    //   await fetchAccountData(provider);
-    //   document.querySelector("#btn-connect").removeAttribute("disabled")
-    // }
-    // // 点击 Connect wallet按钮，调起钱包选择页面
-    // async function onConnect() {
-    //   console.log("Opening a dialog", web3Modal);
-    //   try {
-    //     provider = await web3Modal.connect();
-    //     console.log('provider', provider)
-    //   } catch (e) {
-    //     console.log("Could not get a wallet connection", e);
-    //     return;
-    //   }
-    //   // Subscribe to accounts change
-    //   provider.on("accountsChanged", (accounts) => {
-    //     fetchAccountData();
-    //   });
-    //   // Subscribe to chainId change
-    //   provider.on("chainChanged", (chainId) => {
-    //     fetchAccountData();
-    //   });
-    //   // Subscribe to networkId change
-    //   provider.on("networkChanged", (networkId) => {
-    //     fetchAccountData();
-    //   });
-    //   await refreshAccountData();
-    // }
-    // async function onDisconnect() {
-    //   console.log("Killing the wallet connection", provider);
-    //   if (provider.close) {
-    //     await provider.close();
-    //     await web3Modal.clearCachedProvider();
-    //     provider = null;
-    //   }
-    //   // Set the UI back to the initial state
-    //   document.querySelector("#prepare").style.display = "block";
-    //   document.querySelector("#connected").style.display = "none";
-    // }
-    // window.addEventListener('load', async () => {
-    //   init();
-    //   document.querySelector("#btn-connect").addEventListener("click", onConnect);
-    //   document.querySelector("#btn-disconnect").addEventListener("click", onDisconnect);
-    // });
-  </script>
   <script src="js/jq.js"></script>
 </body>
 
