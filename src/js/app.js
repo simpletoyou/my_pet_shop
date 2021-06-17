@@ -1,13 +1,21 @@
 
-let WalletConnectProvider;
-let Fortmatic;
-let web3Modal;
-let provider;
 
 App = {
 
   web3Provider: null,
   contracts: {},
+
+  web3Modal: null,
+  // Chosen wallet provider given by the dialog window
+  provide: null,
+  // web3
+  web3: null,
+
+  dataList: [],
+  EvmChains: null,
+  Web3Modal: null,
+
+
 
   init: async function () {
     // Load pets. 读取pet.json，将各个宠物信息渲染到页面
@@ -32,109 +40,46 @@ App = {
 
   // 创建web3实例用来调用合约访问账户等
   initWeb3: function () {
+    App.EvmChains = window.evmChains,
 
-    // 先检查 web3 实例是否已存在，Mist浏览器或安装了MetaMak的浏览器会提供Provider，已保证已有provider不会被覆盖
-    // if (typeof web3 !== 'undefined') {
-    //   // 已存在web3，直接使用
-    //   App.web3Provider = web3.currentProvider;
-    // } else {
-    //   // 搭建ganache节点与以太坊网络进行交互
-    //   App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-    // }
-    // // 未安装小狐狸，报错：web3 is not defined
-    // web3 = new Web3(App.web3Provider);
-    // if (!web3) {
-    //   return
-    // }
-
-    Web3Modal = window.Web3Modal.default;
-    WalletConnectProvider = window.WalletConnectProvider.default;
-    Fortmatic = window.Fortmatic;
+    console.log('EvmChains', App.EvmChains)
+    App.Web3Modal = window.Web3Modal.default;
+    App.WalletConnectProvider = window.WalletConnectProvider.default;
 
     const providerOptions = {
       walletconnect: {
-        package: WalletConnectProvider,
+        package: App.WalletConnectProvider, // required
         options: {
-          infuraId: "8043bb2cf99347b1bfadfb233c5325c0",
-        }
-      },
-      fortmatic: {
-        package: Fortmatic,
-        options: {
-          key: "pk_test_391E26A3B43A3350"
+          infuraId: "9321e08afdc04e2c81cabc499dc5d569" // required
         }
       }
     };
-    web3Modal = new Web3Modal({
+
+    App.web3Modal = new App.Web3Modal({
+      network: "mainnet", // optional
       cacheProvider: false, // optional
-      providerOptions, // required
+      disableInjectedProvider: false,
+      providerOptions // required
     });
 
-    console.log('web3Modal',web3Modal)
-    console.log(web3Modal.providerController.providers)
+
+    // 先检查 web3 实例是否已存在，Mist浏览器或安装了MetaMak的浏览器会提供Provider，已保证已有provider不会被覆盖
+    if (typeof web3 !== 'undefined') {
+      // 已存在web3，直接使用
+      App.web3Provider = web3.currentProvider;
+    } else {
+      // 搭建ganache节点与以太坊网络进行交互
+      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+    }
+    // 未安装小狐狸，报错：web3 is not defined
+    web3 = new Web3(App.web3Provider);
+    console.log('web3', web3)
+    if (!web3) {
+      return
+    }
     return App.initContract();
   },
 
-  fetchAccountData: async function () {
-    const web3 = new Web3(provider);
-    const chainId = await web3.eth.getChainId();
-    const template = document.querySelector("#template-balance");
-    const accountContainer = document.querySelector("#accounts");
-    accountContainer.innerHTML = '';
-    const rowResolvers = accounts.map(async (address) => {
-      const balance = await web3.eth.getBalance(address);
-      const ethBalance = web3.utils.fromWei(balance, "ether");
-      const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
-      const clone = template.content.cloneNode(true);
-      clone.querySelector(".address").textContent = address;
-      clone.querySelector(".balance").textContent = humanFriendlyBalance;
-      accountContainer.appendChild(clone);
-    });
-
-    await Promise.all(rowResolvers);
-    document.querySelector("#prepare").style.display = "none";
-    document.querySelector("#connected").style.display = "block";
-  },
-  refreshAccountData: async function () {
-    document.querySelector("#connected").style.display = "none";
-    document.querySelector("#prepare").style.display = "block";
-    document.querySelector("#btn-connect").setAttribute("disabled", "disabled")
-    await fetchAccountData(provider);
-    document.querySelector("#btn-connect").removeAttribute("disabled")
-  },
-  // 点击 Connect wallet按钮，调起钱包选择页面
-  onConnect: async function () {
-    console.log('onConnect')
-    try {
-      provider = await web3Modal.connect();
-      console.log('provider')
-    } catch (e) {
-      console.log("Could not get a wallet connection", e);
-      return;
-    }
-    provider.on("accountsChanged", (accounts) => {
-      console.log(111)
-      fetchAccountData();
-    });
-    provider.on("chainChanged", (chainId) => {
-      console.log(222)
-      fetchAccountData();
-    });
-    provider.on("networkChanged", (networkId) => {
-      fetchAccountData();
-      console.log(333)
-    });
-    await refreshAccountData();
-  },
-  onDisconnect: async function () {
-    if (provider.close) {
-      await provider.close();
-      await web3Modal.clearCachedProvider();
-      provider = null;
-    }
-    document.querySelector("#prepare").style.display = "block";
-    document.querySelector("#connected").style.display = "none";
-  },
 
   // 初始化合约
   initContract: function () {
@@ -191,6 +136,7 @@ App = {
     var adoptionInstance;
     web3js = new Web3(App.web3Provider);//web3js就是你需要的web3实例
     // 获取用户账号
+    console.log('web3js', web3js)
     web3js.eth.getAccounts(function (error, accounts) {
       if (error) return
       var account = accounts[0]; //获取当前登录账号
@@ -207,14 +153,113 @@ App = {
         console.log(err.message);
       });
     });
+  },
+
+  onConnect: async function () {
+    try {
+      if (App.provider == null) {
+        App.provider = await App.web3Modal.connect();
+        App.web3 = new Web3(App.provider);
+      }
+      console.log("provider=====", "connect");
+    } catch (e) {
+      console.log("Could not get a wallet connection", e);
+      return;
+    }
+
+    App.provider.on("accountsChanged", (accounts) => {
+      console.log("accountsChanged=====", "changed");
+      App.web3Modal.clearCachedProvider()
+      App.fetchAccountData();
+    });
+
+    App.provider.on("chainChanged", (chainId) => {
+      console.log("===========", "chainChanged");
+      App.fetchAccountData();
+    });
+
+    App.provider.on("connect", (info) => {
+      console.log("===========", "connect");
+      console.log(info);
+    });
+
+    App.provider.on("disconnect", (error) => {
+      console.log("===========", "disconnect");
+    });
+
+    await App.refreshAccountData();
+  },
+
+  refreshAccountData: async function () {
+    await App.fetchAccountData(App.provider);
+  },
+
+  fetchAccountData: async function () {
+    console.log('this is fetchAccountData')
+    document.getElementById('dataList').textContent = ''
+    const chainId = await App.web3.eth.getChainId();
+    console.log('chainId', chainId)
+    const chainData = await App.EvmChains.getChain(chainId);
+    console.log('chainData', chainData)
+    // 给networkName赋值
+    document.getElementById('network-name').textContent = chainData.name;
+    // this.networkName = chainData.name;
+    const accounts = await web3.eth.getAccounts();
+    document.getElementById('selected-account').textContent = accounts[0];
+
+    console.log("accounts-----------", accounts);
+    const rowResolvers = accounts.map(async (address) => {
+      const balance = await App.web3.eth.getBalance(address);
+      const ethBalance = App.web3.utils.fromWei(balance, "ether");
+      const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
+      App.dataList.length = 0;
+      App.dataList.push({
+        address: address,
+        balance: humanFriendlyBalance
+      });
+      for (let i of App.dataList) {
+        document.getElementById('dataList').append(`地址：${i.address},余额：${i.balance}.`)
+      }
+      document.getElementById('toConnect').style.display = "none"
+      document.getElementById('disConnect').style.display = "block"
+    });
+    await Promise.all(rowResolvers);
+  },
+
+  disConnect: async function () {
+    console.log('this is on disConnect')
+    if (App.provider != null) {
+      document.getElementById('toConnect').style.display = "block"
+      document.getElementById('disConnect').style.display = "none"
+      console.log("Killing the provider connection", "provider off");
+      // If the cached provider is not cleared,
+      // WalletConnect will default to the existing session
+      // and does not allow to re-scan the QR code with a new wallet.
+      // Depending on your use case you may want or want not his behavir.
+      await App.web3Modal.clearCachedProvider();
+      App.provider = null;
+      App.web3 = null;
+      // 数据清空
+      document.getElementById('dataList').textContent = ''
+      document.getElementById('network-name').textContent = ''
+      document.getElementById('selected-account').textContent = ''
+      // 清空数据
+      App.dataList.length = 0;
+    }
   }
 };
 
 $(function () {
   $(window).load(function () {
     // 初始化---页面加载后执行init方法
+
+
     App.init();
-    document.querySelector("#btn-connect").addEventListener("click", App.onConnect);
-    document.querySelector("#btn-disconnect").addEventListener("click", App.onDisconnect);
+    document.getElementById("toConnect").addEventListener("click", App.onConnect);
+    document.getElementById("disConnect").addEventListener("click", App.disConnect);
+
+
+
   });
+
 });

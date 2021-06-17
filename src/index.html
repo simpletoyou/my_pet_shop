@@ -4,7 +4,7 @@
  * @Author: chenchuhua
  * @Date: 2021-06-03 10:32:05
  * @LastEditors: chenchuhua
- * @LastEditTime: 2021-06-15 14:26:32
+ * @LastEditTime: 2021-06-17 16:10:25
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -23,24 +23,41 @@
 </head>
 
 <body>
-  
+
+  <div class="wallet_contect">
+    <div class="connevt_box" style="margin: 10px 0">
+      <button id="toConnect">连接钱包</button>
+      <button id="disConnect" style="display: none;">断开钱包</button>
+    </div>
+    <div class="connect_data">
+      <p>
+        <strong>连接的网络:</strong> <span id="network-name"></span>
+      </p>
+      <p>
+        <strong>连接的账号:</strong> <span id="selected-account"></span>
+      </p>
+    </div>
+    <div class="balance_data">
+      <p>所有钱包的余额</p>
+      <div id="dataList"></div>
+      <!-- <table class="table table-listing">
+              <thead>
+              <th>Address</th>
+              <th>ETH balance</th>
+              </thead>
+              <tbody id="accounts" v-for="(item, index) in dataList" :key="index">
+              <th>{{item.address}}</th>
+              <th>{{item.balance}}</th>
+              </tbody>
+          </table> -->
+    </div>
+  </div>
+
+
   <div class="container">
     <div class="row">
       <div class="col-xs-4 col-sm-4 col-sm-push-2" style="display: flex;justify-content: center;align-items: center;">
         <h1 class="text-center">Pete's Pet Shop</h1>
-        <div style="line-height: 1.1; margin-top: 20px; margin-bottom: 10px;">
-          <div id="prepare">
-            <button class="btn btn-primary" id="btn-connect">
-              连接钱包
-            </button>
-          </div>
-  
-          <div id="connected" style="display: none">
-            <button class="btn btn-primary" id="btn-disconnect">
-              断开连接
-            </button>
-          </div>
-        </div>
         <hr />
         <br />
       </div>
@@ -68,7 +85,8 @@
         </div>
         <div class="panel-body">
           <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;"
-            src="https://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=%E5%B1%B1%E8%8A%B1&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=-1&hd=undefined&latest=undefined&copyright=undefined&cs=311849838,4276793218&os=404692009,3288597543&simid=4121546100,811838175&pn=21&rn=1&di=200970&ln=1517&fr=&fmq=1623737874718_R&fm=rs9&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&oriquery=%E8%8A%B1&objurl=https%3A%2F%2Fgimg2.baidu.com%2Fimage_search%2Fsrc%3Dhttp%253A%252F%252Fwww.bbra.cn%252F%2528S%2528lcfndb55skleimvzdcfnx2f0%2529%2529%252FUploadfiles%252Fimgs%252F20120530%252Fflower3%252FXbzs_019.jpg%26refer%3Dhttp%253A%252F%252Fwww.bbra.cn%26app%3D2002%26size%3Df9999%2C10000%26q%3Da80%26n%3D0%26g%3D0n%26fmt%3Djpeg%3Fsec%3D1626329874%26t%3D940e215c85454ca3f2118b81e81f25de&rpstart=0&rpnum=0&adpicid=0&nojc=undefined" data-holder-rendered="true">
+            src="https://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=%E5%B1%B1%E8%8A%B1&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=-1&hd=undefined&latest=undefined&copyright=undefined&cs=311849838,4276793218&os=404692009,3288597543&simid=4121546100,811838175&pn=21&rn=1&di=200970&ln=1517&fr=&fmq=1623737874718_R&fm=rs9&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=0&spn=0&pi=0&gsm=0&oriquery=%E8%8A%B1&objurl=https%3A%2F%2Fgimg2.baidu.com%2Fimage_search%2Fsrc%3Dhttp%253A%252F%252Fwww.bbra.cn%252F%2528S%2528lcfndb55skleimvzdcfnx2f0%2529%2529%252FUploadfiles%252Fimgs%252F20120530%252Fflower3%252FXbzs_019.jpg%26refer%3Dhttp%253A%252F%252Fwww.bbra.cn%26app%3D2002%26size%3Df9999%2C10000%26q%3Da80%26n%3D0%26g%3D0n%26fmt%3Djpeg%3Fsec%3D1626329874%26t%3D940e215c85454ca3f2118b81e81f25de&rpstart=0&rpnum=0&adpicid=0&nojc=undefined"
+            data-holder-rendered="true">
           <br /><br />
           <strong>Breed</strong>: <span class="pet-breed">Golden Retriever</span><br />
           <strong>Age</strong>: <span class="pet-age">3</span><br />
@@ -85,6 +103,7 @@
   <script src="js/app.js"></script>
   <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
   <script type="text/javascript" src="https://unpkg.com/web3modal"></script>
+  <script type="text/javascript" src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
   <script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider"></script>
   <script type="text/javascript" src="https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js"></script>
   <script src="js/jq.js"></script>
